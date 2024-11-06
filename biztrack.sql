@@ -1,11 +1,11 @@
 -- phpMyAdmin SQL Dump
--- version 5.2.1
+-- version 5.2.0
 -- https://www.phpmyadmin.net/
 --
--- Host: 127.0.0.1
--- Generation Time: Mar 19, 2024 at 05:47 AM
--- Server version: 10.4.28-MariaDB
--- PHP Version: 8.2.4
+-- Host: localhost:3306
+-- Generation Time: Nov 06, 2024 at 08:04 AM
+-- Server version: 8.0.30
+-- PHP Version: 7.4.21
 
 SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
 START TRANSACTION;
@@ -18,7 +18,7 @@ SET time_zone = "+00:00";
 /*!40101 SET NAMES utf8mb4 */;
 
 --
--- Database: `kasirresto`
+-- Database: `biztrack`
 --
 
 -- --------------------------------------------------------
@@ -28,9 +28,9 @@ SET time_zone = "+00:00";
 --
 
 CREATE TABLE `cabangs` (
-  `id` bigint(20) UNSIGNED NOT NULL,
-  `cabang` varchar(255) NOT NULL,
-  `alamat` text NOT NULL,
+  `id` bigint UNSIGNED NOT NULL,
+  `cabang` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `alamat` text COLLATE utf8mb4_unicode_ci NOT NULL,
   `created_at` timestamp NULL DEFAULT NULL,
   `updated_at` timestamp NULL DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
@@ -50,11 +50,11 @@ INSERT INTO `cabangs` (`id`, `cabang`, `alamat`, `created_at`, `updated_at`) VAL
 --
 
 CREATE TABLE `detail_pembelians` (
-  `id` bigint(20) UNSIGNED NOT NULL,
-  `pembelian_id` bigint(20) UNSIGNED NOT NULL,
-  `nama` varchar(255) NOT NULL,
-  `harga` int(11) NOT NULL,
-  `quantity` int(11) NOT NULL,
+  `id` bigint UNSIGNED NOT NULL,
+  `pembelian_id` bigint UNSIGNED NOT NULL,
+  `nama` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `harga` int NOT NULL,
+  `quantity` int NOT NULL,
   `created_at` timestamp NULL DEFAULT NULL,
   `updated_at` timestamp NULL DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
@@ -72,7 +72,32 @@ INSERT INTO `detail_pembelians` (`id`, `pembelian_id`, `nama`, `harga`, `quantit
 (6, 3, 'Bebek Goreng Lamongan', 45000, 1, '2024-03-18 21:19:28', '2024-03-18 21:19:28'),
 (7, 3, 'Es Susu', 5000, 1, '2024-03-18 21:19:28', '2024-03-18 21:19:28'),
 (8, 4, 'Bebek Goreng Lamongan', 45000, 2, '2024-03-18 21:19:44', '2024-03-18 21:19:44'),
-(9, 4, 'Es Susu', 5000, 2, '2024-03-18 21:19:44', '2024-03-18 21:19:44');
+(9, 4, 'Es Susu', 5000, 2, '2024-03-18 21:19:44', '2024-03-18 21:19:44'),
+(10, 5, 'Bebek Goreng Lamongan', 45000, 1, '2024-11-01 01:45:09', '2024-11-01 01:45:09'),
+(11, 5, 'Nila Bakar Pedas', 23000, 1, '2024-11-01 01:45:09', '2024-11-01 01:45:09'),
+(12, 5, 'Soto Lamongan', 15000, 1, '2024-11-01 01:45:09', '2024-11-01 01:45:09'),
+(13, 5, 'Ayam Bakar Madu', 18000, 1, '2024-11-01 01:45:09', '2024-11-01 01:45:09'),
+(14, 6, 'Ayam Bakar Madu', 18000, 1, '2024-11-01 01:45:58', '2024-11-01 01:45:58'),
+(15, 6, 'Ayam Goreng Lalapan', 20000, 1, '2024-11-01 01:45:58', '2024-11-01 01:45:58'),
+(16, 6, 'Bebek Goreng Lamongan', 45000, 1, '2024-11-01 01:45:58', '2024-11-01 01:45:58'),
+(17, 6, 'Soto Lamongan', 15000, 1, '2024-11-01 01:45:58', '2024-11-01 01:45:58'),
+(18, 6, 'Teh hangat', 4000, 1, '2024-11-01 01:45:58', '2024-11-01 01:45:58'),
+(19, 6, 'Es Teh', 4000, 1, '2024-11-01 01:45:58', '2024-11-01 01:45:58'),
+(20, 6, 'Es Jeruk', 5000, 1, '2024-11-01 01:45:58', '2024-11-01 01:45:58'),
+(21, 7, 'Teh hangat', 4000, 14, '2024-11-01 01:46:42', '2024-11-01 01:46:42'),
+(22, 8, 'Bebek Goreng Lamongan', 45000, 7, '2024-11-01 01:46:48', '2024-11-01 01:46:48'),
+(23, 9, 'Soto Lamongan', 15000, 1, '2024-11-01 01:46:53', '2024-11-01 01:46:53'),
+(24, 10, 'Ayam Bakar Madu', 18000, 1, '2024-11-01 01:46:55', '2024-11-01 01:46:55'),
+(25, 11, 'Ayam Bakar Madu', 18000, 1, '2024-11-01 01:47:05', '2024-11-01 01:47:05'),
+(26, 11, 'Ayam Goreng Lalapan', 20000, 1, '2024-11-01 01:47:05', '2024-11-01 01:47:05'),
+(27, 11, 'Soto Lamongan', 15000, 1, '2024-11-01 01:47:05', '2024-11-01 01:47:05'),
+(28, 12, 'Es Jeruk', 5000, 1, '2024-11-01 01:47:16', '2024-11-01 01:47:16'),
+(29, 12, 'Es Susu', 5000, 1, '2024-11-01 01:47:16', '2024-11-01 01:47:16'),
+(30, 12, 'Es Teh', 4000, 1, '2024-11-01 01:47:16', '2024-11-01 01:47:16'),
+(31, 12, 'Teh hangat', 4000, 1, '2024-11-01 01:47:16', '2024-11-01 01:47:16'),
+(32, 13, 'Es Susu', 5000, 1, '2024-11-03 23:56:18', '2024-11-03 23:56:18'),
+(33, 13, 'Es Teh', 4000, 1, '2024-11-03 23:56:18', '2024-11-03 23:56:18'),
+(34, 13, 'Teh hangat', 4000, 1, '2024-11-03 23:56:18', '2024-11-03 23:56:18');
 
 -- --------------------------------------------------------
 
@@ -81,13 +106,13 @@ INSERT INTO `detail_pembelians` (`id`, `pembelian_id`, `nama`, `harga`, `quantit
 --
 
 CREATE TABLE `failed_jobs` (
-  `id` bigint(20) UNSIGNED NOT NULL,
-  `uuid` varchar(255) NOT NULL,
-  `connection` text NOT NULL,
-  `queue` text NOT NULL,
-  `payload` longtext NOT NULL,
-  `exception` longtext NOT NULL,
-  `failed_at` timestamp NOT NULL DEFAULT current_timestamp()
+  `id` bigint UNSIGNED NOT NULL,
+  `uuid` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `connection` text COLLATE utf8mb4_unicode_ci NOT NULL,
+  `queue` text COLLATE utf8mb4_unicode_ci NOT NULL,
+  `payload` longtext COLLATE utf8mb4_unicode_ci NOT NULL,
+  `exception` longtext COLLATE utf8mb4_unicode_ci NOT NULL,
+  `failed_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 -- --------------------------------------------------------
@@ -97,14 +122,14 @@ CREATE TABLE `failed_jobs` (
 --
 
 CREATE TABLE `makanans` (
-  `id` bigint(20) UNSIGNED NOT NULL,
-  `kode_makanan` varchar(255) NOT NULL,
-  `nama_makanan` varchar(255) NOT NULL,
-  `deskripsi` varchar(255) NOT NULL,
-  `gambar` varchar(255) NOT NULL,
-  `harga` bigint(20) NOT NULL,
-  `user_id` bigint(20) UNSIGNED NOT NULL,
-  `cabang_id` bigint(20) UNSIGNED NOT NULL,
+  `id` bigint UNSIGNED NOT NULL,
+  `kode_makanan` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `nama_makanan` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `deskripsi` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `gambar` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `harga` bigint NOT NULL,
+  `user_id` bigint UNSIGNED NOT NULL,
+  `cabang_id` bigint UNSIGNED NOT NULL,
   `created_at` timestamp NULL DEFAULT NULL,
   `updated_at` timestamp NULL DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
@@ -127,9 +152,9 @@ INSERT INTO `makanans` (`id`, `kode_makanan`, `nama_makanan`, `deskripsi`, `gamb
 --
 
 CREATE TABLE `migrations` (
-  `id` int(10) UNSIGNED NOT NULL,
-  `migration` varchar(255) NOT NULL,
-  `batch` int(11) NOT NULL
+  `id` int UNSIGNED NOT NULL,
+  `migration` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `batch` int NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 --
@@ -156,14 +181,14 @@ INSERT INTO `migrations` (`id`, `migration`, `batch`) VALUES
 --
 
 CREATE TABLE `minumen` (
-  `id` bigint(20) UNSIGNED NOT NULL,
-  `kode_minuman` varchar(255) NOT NULL,
-  `nama_minuman` varchar(255) NOT NULL,
-  `deskripsi` varchar(255) NOT NULL,
-  `gambar` varchar(255) NOT NULL,
-  `harga` bigint(20) NOT NULL,
-  `user_id` bigint(20) UNSIGNED NOT NULL,
-  `cabang_id` bigint(20) UNSIGNED NOT NULL,
+  `id` bigint UNSIGNED NOT NULL,
+  `kode_minuman` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `nama_minuman` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `deskripsi` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `gambar` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `harga` bigint NOT NULL,
+  `user_id` bigint UNSIGNED NOT NULL,
+  `cabang_id` bigint UNSIGNED NOT NULL,
   `created_at` timestamp NULL DEFAULT NULL,
   `updated_at` timestamp NULL DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
@@ -185,8 +210,8 @@ INSERT INTO `minumen` (`id`, `kode_minuman`, `nama_minuman`, `deskripsi`, `gamba
 --
 
 CREATE TABLE `password_resets` (
-  `email` varchar(255) NOT NULL,
-  `token` varchar(255) NOT NULL,
+  `email` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `token` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
   `created_at` timestamp NULL DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
@@ -197,8 +222,8 @@ CREATE TABLE `password_resets` (
 --
 
 CREATE TABLE `password_reset_tokens` (
-  `email` varchar(255) NOT NULL,
-  `token` varchar(255) NOT NULL,
+  `email` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `token` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
   `created_at` timestamp NULL DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
@@ -209,13 +234,13 @@ CREATE TABLE `password_reset_tokens` (
 --
 
 CREATE TABLE `pembelians` (
-  `id` bigint(20) UNSIGNED NOT NULL,
-  `kode_pembelian` varchar(255) NOT NULL,
-  `total_harga` bigint(20) NOT NULL,
-  `status` enum('paid','unpaid') NOT NULL DEFAULT 'unpaid',
+  `id` bigint UNSIGNED NOT NULL,
+  `kode_pembelian` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `total_harga` bigint NOT NULL,
+  `status` enum('paid','unpaid') COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT 'unpaid',
   `tgl_transaksi` date NOT NULL DEFAULT '2024-03-19',
-  `user_id` bigint(20) UNSIGNED NOT NULL,
-  `cabang_id` bigint(20) UNSIGNED NOT NULL,
+  `user_id` bigint UNSIGNED NOT NULL,
+  `cabang_id` bigint UNSIGNED NOT NULL,
   `created_at` timestamp NULL DEFAULT NULL,
   `updated_at` timestamp NULL DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
@@ -228,7 +253,16 @@ INSERT INTO `pembelians` (`id`, `kode_pembelian`, `total_harga`, `status`, `tgl_
 (1, 'TRX-65f90e9706daf', 46000, 'paid', '2024-03-19', 1, 1, '2024-03-18 21:03:35', '2024-03-18 21:03:41'),
 (2, 'TRX-65f90eb9e7bf8', 28000, 'paid', '2024-03-19', 1, 1, '2024-03-18 21:04:09', '2024-03-18 21:04:18'),
 (3, 'TRX-65f9124fbd0e6', 50000, 'paid', '2024-03-19', 6, 2, '2024-03-18 21:19:27', '2024-03-18 21:19:33'),
-(4, 'TRX-65f9125fc94e8', 100000, 'paid', '2024-03-19', 6, 2, '2024-03-18 21:19:43', '2024-03-18 21:19:48');
+(4, 'TRX-65f9125fc94e8', 100000, 'paid', '2024-03-19', 6, 2, '2024-03-18 21:19:43', '2024-03-18 21:19:48'),
+(5, 'TRX-6724951531949', 101000, 'unpaid', '2024-11-01', 1, 1, '2024-11-01 01:45:09', '2024-11-01 01:45:09'),
+(6, 'TRX-6724954641bd0', 111000, 'unpaid', '2024-11-01', 1, 1, '2024-11-01 01:45:58', '2024-11-01 01:45:58'),
+(7, 'TRX-67249572d3add', 56000, 'unpaid', '2024-11-01', 1, 1, '2024-11-01 01:46:42', '2024-11-01 01:46:42'),
+(8, 'TRX-6724957853d36', 315000, 'unpaid', '2024-11-01', 1, 1, '2024-11-01 01:46:48', '2024-11-01 01:46:48'),
+(9, 'TRX-6724957d02f0c', 15000, 'unpaid', '2024-11-01', 1, 1, '2024-11-01 01:46:53', '2024-11-01 01:46:53'),
+(10, 'TRX-6724957f58409', 18000, 'unpaid', '2024-11-01', 1, 1, '2024-11-01 01:46:55', '2024-11-01 01:46:55'),
+(11, 'TRX-672495893c5b0', 53000, 'unpaid', '2024-11-01', 1, 1, '2024-11-01 01:47:05', '2024-11-01 01:47:05'),
+(12, 'TRX-67249594ac120', 18000, 'unpaid', '2024-11-01', 1, 1, '2024-11-01 01:47:16', '2024-11-01 01:47:16'),
+(13, 'TRX-67287012c8466', 13000, 'paid', '2024-11-04', 1, 1, '2024-11-03 23:56:18', '2024-11-03 23:56:28');
 
 -- --------------------------------------------------------
 
@@ -237,12 +271,12 @@ INSERT INTO `pembelians` (`id`, `kode_pembelian`, `total_harga`, `status`, `tgl_
 --
 
 CREATE TABLE `personal_access_tokens` (
-  `id` bigint(20) UNSIGNED NOT NULL,
-  `tokenable_type` varchar(255) NOT NULL,
-  `tokenable_id` bigint(20) UNSIGNED NOT NULL,
-  `name` varchar(255) NOT NULL,
-  `token` varchar(64) NOT NULL,
-  `abilities` text DEFAULT NULL,
+  `id` bigint UNSIGNED NOT NULL,
+  `tokenable_type` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `tokenable_id` bigint UNSIGNED NOT NULL,
+  `name` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `token` varchar(64) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `abilities` text COLLATE utf8mb4_unicode_ci,
   `last_used_at` timestamp NULL DEFAULT NULL,
   `expires_at` timestamp NULL DEFAULT NULL,
   `created_at` timestamp NULL DEFAULT NULL,
@@ -256,9 +290,9 @@ CREATE TABLE `personal_access_tokens` (
 --
 
 CREATE TABLE `roles` (
-  `id` bigint(20) UNSIGNED NOT NULL,
-  `role` varchar(255) NOT NULL,
-  `deskripsi` text NOT NULL,
+  `id` bigint UNSIGNED NOT NULL,
+  `role` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `deskripsi` text COLLATE utf8mb4_unicode_ci NOT NULL,
   `created_at` timestamp NULL DEFAULT NULL,
   `updated_at` timestamp NULL DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
@@ -280,14 +314,14 @@ INSERT INTO `roles` (`id`, `role`, `deskripsi`, `created_at`, `updated_at`) VALU
 --
 
 CREATE TABLE `users` (
-  `id` bigint(20) UNSIGNED NOT NULL,
-  `name` varchar(255) NOT NULL,
-  `email` varchar(255) NOT NULL,
+  `id` bigint UNSIGNED NOT NULL,
+  `name` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `email` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
   `email_verified_at` timestamp NULL DEFAULT NULL,
-  `password` varchar(255) NOT NULL,
-  `role_id` bigint(20) UNSIGNED NOT NULL,
-  `cabang_id` bigint(20) UNSIGNED NOT NULL,
-  `remember_token` varchar(100) DEFAULT NULL,
+  `password` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `role_id` bigint UNSIGNED NOT NULL,
+  `cabang_id` bigint UNSIGNED NOT NULL,
+  `remember_token` varchar(100) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
   `created_at` timestamp NULL DEFAULT NULL,
   `updated_at` timestamp NULL DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
@@ -297,12 +331,12 @@ CREATE TABLE `users` (
 --
 
 INSERT INTO `users` (`id`, `name`, `email`, `email_verified_at`, `password`, `role_id`, `cabang_id`, `remember_token`, `created_at`, `updated_at`) VALUES
-(1, 'Administrator', 'administrator@gmail.com', NULL, '$2y$10$QEdvYpUvzzOLZVQ06B7yQOybpvGAez4PrajIg4bZasknWIB01jSZ.', 1, 1, NULL, '2024-03-18 20:39:44', '2024-03-18 20:39:44'),
-(2, 'Kepala Restoran', 'kepalarestoran@gmail.com', NULL, '$2y$10$R/t92tPzQCTimSxR1HA17.LENTZsi17VgXrQdRbv5DCJuY7pEVj6.', 2, 1, NULL, '2024-03-18 20:39:44', '2024-03-18 20:39:44'),
-(3, 'mandono', 'mandono@gmail.com', NULL, '$2y$10$unbfPiVBWaYC4kscm9XBzunxkRS4zKU8gGgzoaTyyO5jMP6fEX0Dm', 4, 1, NULL, '2024-03-18 20:39:45', '2024-03-18 20:39:45'),
-(4, 'Mujiyono', 'mujiyono@gmail.com', NULL, '$2y$10$Rab9qQhRXIF0dt0dWigyGOLFd2lJ14Xuc7Kll2JkRfD7Yqvs.Kmwu', 3, 1, NULL, '2024-03-18 20:39:45', '2024-03-18 20:39:45'),
-(5, 'Abdul', 'abdul@gmail.com', NULL, '$2y$10$.o5R./Q/Xa0Qs/p1gHulaOxj/GJr7lXR/8ZvZnzo6qxHSeWUDpp1y', 4, 2, NULL, '2024-03-18 20:39:45', '2024-03-18 20:39:45'),
-(6, 'Agung', 'agung@gmail.com', NULL, '$2y$10$5L606lNheQvLrlJvXXG6hOWKCu0y.8TBbu66VIy3Cfc6JHFU3lrda', 3, 2, NULL, '2024-03-18 20:39:45', '2024-03-18 20:39:45');
+(1, 'Administrator', 'administrator@gmail.com', NULL, '$2y$10$wh40LtvnG1Jb7fS2GsRDKeVqef5iwJfPDBRKNqDyN1wNa2/LXc1Sy', 1, 1, NULL, '2024-03-18 20:39:44', '2024-03-18 20:39:44'),
+(2, 'Kepala Restoran', 'kepalarestoran@gmail.com', NULL, '$2y$10$wh40LtvnG1Jb7fS2GsRDKeVqef5iwJfPDBRKNqDyN1wNa2/LXc1Sy', 2, 1, NULL, '2024-03-18 20:39:44', '2024-03-18 20:39:44'),
+(3, 'mandono', 'mandono@gmail.com', NULL, '$2y$10$wh40LtvnG1Jb7fS2GsRDKeVqef5iwJfPDBRKNqDyN1wNa2/LXc1Sy', 4, 1, NULL, '2024-03-18 20:39:45', '2024-03-18 20:39:45'),
+(4, 'Mujiyono', 'mujiyono@gmail.com', NULL, '$2b$10$.RAXFAkwgAEifTZthrl0L.DOeN8bIUOs1HO3sJtSbREFoBsKfdhKe\n', 3, 1, NULL, '2024-03-18 20:39:45', '2024-03-18 20:39:45'),
+(5, 'Abdul', 'abdul@gmail.com', NULL, '$2b$10$.RAXFAkwgAEifTZthrl0L.DOeN8bIUOs1HO3sJtSbREFoBsKfdhKe\n', 4, 2, NULL, '2024-03-18 20:39:45', '2024-03-18 20:39:45'),
+(6, 'Agung', 'agung@gmail.com', NULL, '$2b$10$.RAXFAkwgAEifTZthrl0L.DOeN8bIUOs1HO3sJtSbREFoBsKfdhKe\n', 3, 2, NULL, '2024-03-18 20:39:45', '2024-03-18 20:39:45');
 
 --
 -- Indexes for dumped tables
@@ -392,61 +426,61 @@ ALTER TABLE `users`
 -- AUTO_INCREMENT for table `cabangs`
 --
 ALTER TABLE `cabangs`
-  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
+  MODIFY `id` bigint UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
 
 --
 -- AUTO_INCREMENT for table `detail_pembelians`
 --
 ALTER TABLE `detail_pembelians`
-  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=10;
+  MODIFY `id` bigint UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=35;
 
 --
 -- AUTO_INCREMENT for table `failed_jobs`
 --
 ALTER TABLE `failed_jobs`
-  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT;
+  MODIFY `id` bigint UNSIGNED NOT NULL AUTO_INCREMENT;
 
 --
 -- AUTO_INCREMENT for table `makanans`
 --
 ALTER TABLE `makanans`
-  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=6;
+  MODIFY `id` bigint UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=6;
 
 --
 -- AUTO_INCREMENT for table `migrations`
 --
 ALTER TABLE `migrations`
-  MODIFY `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=12;
+  MODIFY `id` int UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=12;
 
 --
 -- AUTO_INCREMENT for table `minumen`
 --
 ALTER TABLE `minumen`
-  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
+  MODIFY `id` bigint UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
 
 --
 -- AUTO_INCREMENT for table `pembelians`
 --
 ALTER TABLE `pembelians`
-  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
+  MODIFY `id` bigint UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=14;
 
 --
 -- AUTO_INCREMENT for table `personal_access_tokens`
 --
 ALTER TABLE `personal_access_tokens`
-  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT;
+  MODIFY `id` bigint UNSIGNED NOT NULL AUTO_INCREMENT;
 
 --
 -- AUTO_INCREMENT for table `roles`
 --
 ALTER TABLE `roles`
-  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
+  MODIFY `id` bigint UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
 
 --
 -- AUTO_INCREMENT for table `users`
 --
 ALTER TABLE `users`
-  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=9;
+  MODIFY `id` bigint UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=9;
 COMMIT;
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;

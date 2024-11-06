@@ -5,7 +5,7 @@
   <meta charset="UTF-8">
   <meta content="width=device-width, initial-scale=1, maximum-scale=1, shrink-to-fit=no" name="viewport">
   <meta name="csrf-token" content="{{ csrf_token() }}">
-  <title>Kasirresto</title>
+  <title>Biztrack</title>
 
   <!-- General CSS Files -->
   <link rel="stylesheet" href="assets/modules/bootstrap/css/bootstrap.min.css">
@@ -76,7 +76,7 @@
       <div class="main-sidebar sidebar-style-2">
         <aside id="sidebar-wrapper">
           <div class="sidebar-brand">
-            <a href="/">KASIRRESTO</a>
+            <a href="/">Biztrack</a>
           </div>
           <div class="sidebar-brand sidebar-brand-sm">
             <a href="/">KASIR</a>
