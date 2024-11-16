@@ -4,9 +4,9 @@
 <section class="section">
     <div class="section-header">
       <h1>Rekap Pemasukan</h1>
-        <div class="ml-auto">
+        <!-- <div class="ml-auto">
             <a href="javascript:void(0)" class="btn btn-danger" id="print-rekap-pemasukan"><i class="fa fa-sharp fa-light fa-print"></i> Print PDF</a>
-        </div>
+        </div> -->
     </div>
 
     <div class="section-body">
@@ -85,7 +85,7 @@
         </div>
 
         <div class="row"> 
-            @if (auth()->user()->role->role === 'administrator' || auth()->user()->role->role === 'kepala restoran' )
+            @if (auth()->user()->role->role === 'administrator' || auth()->user()->role->role === 'owner' )
             <div class="col-lg-12">
                 <div class="card">
                     <div class="card-body">

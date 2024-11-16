@@ -18,55 +18,57 @@
             </div>
           </div>
       
-            <div class="col-lg-4 col-md-6 col-sm-6 col-12">
-                <div class="card card-statistic-1">
-                  <div class="card-icon bg-danger">
-                    <i class="fa far fa-exchange-alt"></i>
+          <!-- Stat Cards -->
+          <div class="col-lg-4 col-md-6 col-sm-6 col-12">
+              <div class="card card-statistic-1">
+                <div class="card-icon bg-danger">
+                  <i class="fa far fa-exchange-alt"></i>
+                </div>
+                <div class="card-wrap">
+                  <div class="card-header">
+                    <h4>Total Transaksi</h4>
                   </div>
-                  <div class="card-wrap">
-                    <div class="card-header">
-                      <h4>Total Transaksi</h4>
-                    </div>
-                    <div class="card-body">
-                      {{ $totalTransaksi }}
-                    </div>
+                  <div class="card-body">
+                    {{ $totalTransaksi }}
                   </div>
                 </div>
               </div>
-              <div class="col-lg-4 col-md-6 col-sm-6 col-12">
-                <div class="card card-statistic-1">
-                  <div class="card-icon bg-warning">
-                    <i class="far fa-file"></i>
-                  </div>
-                  <div class="card-wrap">
-                    <div class="card-header">
-                      <h4>Pemasukan Hari Ini</h4>
-                    </div>
-                    <div class="card-body">
-                      Rp. {{ number_format($pemasukanHariIni, 0, ',', '.') }}
-                    </div>
-                  </div>
-                </div>
-              </div>
-              <div class="col-lg-4 col-md-6 col-sm-6 col-12">
-                <div class="card card-statistic-1">
-                  <div class="card-icon bg-success">
-                    <i class="fa fal fa-file-alt"></i>
-                  </div>
-                  <div class="card-wrap">
-                    <div class="card-header">
-                      <h4>Total Pemasukan</h4>
-                    </div>
-                    <div class="card-body">
-                      Rp. {{ number_format($semuaPemasukan, 0, ',', '.') }}
-                    </div>
-                  </div>
-                </div>
-              </div>                  
             </div>
+            <div class="col-lg-4 col-md-6 col-sm-6 col-12">
+              <div class="card card-statistic-1">
+                <div class="card-icon bg-warning">
+                  <i class="far fa-file"></i>
+                </div>
+                <div class="card-wrap">
+                  <div class="card-header">
+                    <h4>Pemasukan Hari Ini</h4>
+                  </div>
+                  <div class="card-body">
+                    Rp. {{ number_format($pemasukanHariIni, 0, ',', '.') }}
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="col-lg-4 col-md-6 col-sm-6 col-12">
+              <div class="card card-statistic-1">
+                <div class="card-icon bg-success">
+                  <i class="fa fal fa-file-alt"></i>
+                </div>
+                <div class="card-wrap">
+                  <div class="card-header">
+                    <h4>Total Pemasukan</h4>
+                  </div>
+                  <div class="card-body">
+                    Rp. {{ number_format($semuaPemasukan, 0, ',', '.') }}
+                  </div>
+                </div>
+              </div>
+            </div>                  
+          </div>
         </div>
 
         <div class="row">
+          <!-- Daily Transaction Chart -->
           <div class="col-lg-8">
             <div class="card">
               <div class="card-header">
@@ -78,6 +80,7 @@
             </div>
           </div>
           
+          <!-- Revenue per Branch Chart -->
           <div class="col-lg-4">
             <div class="card">
               <div class="card-header">
@@ -88,7 +91,8 @@
               </div>
             </div>
           </div>
-          </div>
+        </div>
+
         </div>
     </div>
   </section>
@@ -97,6 +101,8 @@
 
 @push('script')
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+<!-- Daily Transaction Chart Script -->
 <script>
   const ctx = document.getElementById('grafikPenjualan');
 
@@ -137,6 +143,7 @@
   });
 </script>
 
+<!-- Revenue per Branch Chart Script -->
 <script>
   const pemasukanCabang = document.getElementById('pemasukanCabang');
   const data = {
@@ -156,7 +163,6 @@
               'rgb(255, 99, 132)',
               'rgb(54, 162, 235)',
               'rgb(255, 205, 86)'
-              // Tambahkan warna latar belakang tambahan sesuai dengan jumlah cabang
           ],
           hoverOffset: 4
       }]
@@ -176,4 +182,6 @@
   });
 </script>
 
-@endpush 
+
+
+@endpush

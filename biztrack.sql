@@ -303,7 +303,7 @@ CREATE TABLE `roles` (
 
 INSERT INTO `roles` (`id`, `role`, `deskripsi`, `created_at`, `updated_at`) VALUES
 (1, 'administrator', 'Memiliki semua hak akses', '2024-03-18 20:39:45', '2024-03-18 20:39:45'),
-(2, 'kepala restoran', 'Memiliki hak akses pada laporan per cabang maupun semua', '2024-03-18 20:39:45', '2024-03-18 20:39:45'),
+(2, 'owner', 'Memiliki hak akses pada laporan per cabang maupun semua', '2024-03-18 20:39:45', '2024-03-18 20:39:45'),
 (3, 'kasir', 'Memiliki hak akses pada menu kasir', '2024-03-18 20:39:45', '2024-03-18 20:39:45'),
 (4, 'admin', 'Memiliki hak akses manajemen produk dan laporan cabang', '2024-03-18 20:39:45', '2024-03-18 20:39:45');
 
@@ -332,7 +332,7 @@ CREATE TABLE `users` (
 
 INSERT INTO `users` (`id`, `name`, `email`, `email_verified_at`, `password`, `role_id`, `cabang_id`, `remember_token`, `created_at`, `updated_at`) VALUES
 (1, 'Administrator', 'administrator@gmail.com', NULL, '$2y$10$wh40LtvnG1Jb7fS2GsRDKeVqef5iwJfPDBRKNqDyN1wNa2/LXc1Sy', 1, 1, NULL, '2024-03-18 20:39:44', '2024-03-18 20:39:44'),
-(2, 'Kepala Restoran', 'kepalarestoran@gmail.com', NULL, '$2y$10$wh40LtvnG1Jb7fS2GsRDKeVqef5iwJfPDBRKNqDyN1wNa2/LXc1Sy', 2, 1, NULL, '2024-03-18 20:39:44', '2024-03-18 20:39:44'),
+(2, 'owner', 'kepalarestoran@gmail.com', NULL, '$2y$10$wh40LtvnG1Jb7fS2GsRDKeVqef5iwJfPDBRKNqDyN1wNa2/LXc1Sy', 2, 1, NULL, '2024-03-18 20:39:44', '2024-03-18 20:39:44'),
 (3, 'mandono', 'mandono@gmail.com', NULL, '$2y$10$wh40LtvnG1Jb7fS2GsRDKeVqef5iwJfPDBRKNqDyN1wNa2/LXc1Sy', 4, 1, NULL, '2024-03-18 20:39:45', '2024-03-18 20:39:45'),
 (4, 'Mujiyono', 'mujiyono@gmail.com', NULL, '$2b$10$.RAXFAkwgAEifTZthrl0L.DOeN8bIUOs1HO3sJtSbREFoBsKfdhKe\n', 3, 1, NULL, '2024-03-18 20:39:45', '2024-03-18 20:39:45'),
 (5, 'Abdul', 'abdul@gmail.com', NULL, '$2b$10$.RAXFAkwgAEifTZthrl0L.DOeN8bIUOs1HO3sJtSbREFoBsKfdhKe\n', 4, 2, NULL, '2024-03-18 20:39:45', '2024-03-18 20:39:45'),

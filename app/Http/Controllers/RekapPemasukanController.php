@@ -22,7 +22,7 @@ class RekapPemasukanController extends Controller
         $hariIni            = Carbon::now()->format('Y-m-d');
 
 
-        if ($userRole === 'administrator' || $userRole === 'kepala restoran') {
+        if ($userRole === 'administrator' || $userRole === 'owner') {
             $pemasukanBulanIni  = Pembelian::whereMonth('tgl_transaksi', $bulanIni)
                 ->where('status', '=', 'paid')
                 ->sum('total_harga');
@@ -74,7 +74,7 @@ class RekapPemasukanController extends Controller
         $tanggalMulai   = $request->input('tanggal_mulai');
         $tanggalSelesai = $request->input('tanggal_selesai');
 
-        if ($user->role->role === 'administrator' || $user->role->role === 'kepala restoran') {
+        if ($user->role->role === 'administrator' || $user->role->role === 'owner') {
             if ($selectedOption == '' || $selectedOption === 'Semua Cabang') {
                 $pembelians = Pembelian::where('status', '=', 'paid')->orderBy('id', 'DESC')->get();
             } else {

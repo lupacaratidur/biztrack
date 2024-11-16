@@ -9,6 +9,7 @@ use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Validator;
+use Illuminate\Support\Facades\Log;
 
 class MinumanController extends Controller
 {
@@ -19,7 +20,7 @@ class MinumanController extends Controller
     {
         $user = auth()->user();
 
-        if ($user->role->role === 'administrator' || $user->role->role === 'kepala restoran') {
+        if ($user->role->role === 'administrator' || $user->role->role === 'owner') {
             $cabang = Cabang::all();
         } else {
             $cabang = Cabang::where('id', auth()->user()->cabang_id)->get();
@@ -36,7 +37,7 @@ class MinumanController extends Controller
     public function getData()
     {
         $user = auth()->user();
-        if ($user->role->role === 'administrator' || $user->role->role === 'kepala restoran') {
+        if ($user->role->role === 'administrator' || $user->role->role === 'owner') {
             $minumans = Minuman::with('cabang')->orderBy('id', 'DESC')->get();
         } else {
             $minumans = Minuman::with('cabang')->where('cabang_id', auth()->user()->cabang_id)->orderBy('id', 'DESC')->get();
@@ -208,13 +209,34 @@ class MinumanController extends Controller
      */
     public function destroy(Minuman $minuman)
     {
-        unlink('.' . Storage::url($minuman->gambar));
+        try {
+            // Debugging ID
+            \Log::info("Menghapus ID: " . $minuman->id);
 
-        Minuman::destroy($minuman->id);
+            // Cek apakah gambar ada
+            $filePath = '.' . Storage::url($minuman->gambar);
+            if (file_exists($filePath) && is_file($filePath)) {
+                unlink($filePath);
+            }
 
-        return response()->json([
-            'success'   => true,
-            'message'   => 'Data Berhasil Dihapus'
-        ]);
+            // Hapus data
+            $deleted = Minuman::destroy($minuman->id);
+
+            // Debugging penghapusan
+            \Log::info("Data berhasil dihapus: " . $deleted);
+
+            return response()->json([
+                'success'   => true,
+                'message'   => 'Data Berhasil Dihapus'
+            ]);
+        } catch (\Exception $e) {
+            // Debugging jika error
+            \Log::error($e->getMessage());
+            return response()->json([
+                'success'   => false,
+                'message'   => 'Gagal menghapus data'
+            ], 500);
+        }
     }
+
 }

@@ -17,7 +17,7 @@ class MakananController extends Controller
     public function index()
     {
         $user = auth()->user();
-        if ($user->role->role === 'administrator' || $user->role->role === 'kepala restoran') {
+        if ($user->role->role === 'administrator' || $user->role->role === 'owner') {
             $cabang = Cabang::all();
         } else {
             $cabang = Cabang::where('id', auth()->user()->cabang_id)->get();
@@ -34,7 +34,7 @@ class MakananController extends Controller
     public function getData()
     {
         $user = auth()->user();
-        if ($user->role->role === 'administrator' || $user->role->role === 'kepala restoran') {
+        if ($user->role->role === 'administrator' || $user->role->role === 'owner') {
             $makanans = Makanan::with('cabang')->orderBy('id', 'DESC')->get();
         } else {
             $makanans = Makanan::with('cabang')->where('cabang_id', auth()->user()->cabang_id)->orderBy('id', 'DESC')->get();
@@ -207,8 +207,14 @@ class MakananController extends Controller
      */
     public function destroy(Makanan $makanan)
     {
-        unlink('.' . Storage::url($makanan->gambar));
+        $filePath = '.' . Storage::url($makanan->gambar);
+        
+        // Periksa apakah file gambar ada
+        if (file_exists($filePath) && is_file($filePath)) {
+            unlink($filePath); // Hapus file jika ada
+        }
 
+        // Hapus data dari database
         Makanan::destroy($makanan->id);
 
         return response()->json([
@@ -216,4 +222,5 @@ class MakananController extends Controller
             'message'   => 'Data Berhasil Dihapus'
         ]);
     }
+
 }

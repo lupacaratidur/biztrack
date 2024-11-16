@@ -6,26 +6,25 @@
   <meta content="width=device-width, initial-scale=1, maximum-scale=1, shrink-to-fit=no" name="viewport">
   <meta name="csrf-token" content="{{ csrf_token() }}">
   <title>Biztrack</title>
-
+  
   <!-- General CSS Files -->
   <link rel="stylesheet" href="assets/modules/bootstrap/css/bootstrap.min.css">
   <link rel="stylesheet" href="assets/modules/fontawesome/css/all.min.css">
-
+  
   <!-- Template CSS -->
   <link rel="stylesheet" href="assets/css/style.css">
   <link rel="stylesheet" href="assets/css/components.css">
 
-  <!-- Jquery CDN -->
-  <script src="https://code.jquery.com/jquery-3.7.0.min.js" integrity="sha256-2Pmvv0kuTBOenSvLm6bvfBSSHrUJ+3A7x6P5Ebd07/g=" crossorigin="anonymous"></script>
+<!-- Memuat JS Bootstrap -->
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
+
   
+  <!-- Jquery CDN -->
+  <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
   <!-- Datatables Jquery -->
   <link rel="stylesheet" href="//cdn.datatables.net/1.13.4/css/jquery.dataTables.min.css">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/qrious/4.0.2/qrious.min.js"></script>
 
-  <!-- @TODO: replace SET_YOUR_CLIENT_KEY_HERE with your client key -->
-  <script type="text/javascript"
-  src="https://app.sandbox.midtrans.com/snap/snap.js"
-  data-client-key="{{ config('midtrans.client_key') }}"></script>
-  <!-- Note: replace with src="https://app.midtrans.com/snap/snap.js" for Production environment -->
 </head>
 
 <body>
@@ -37,8 +36,8 @@
           <ul class="navbar-nav mr-3">
             <li><a href="#" data-toggle="sidebar" class="nav-link nav-link-lg"><i class="fas fa-bars"></i></a></li>
           </ul>
-          <div class="search-element">
-            <input class="form-control" type="text" placeholder="Cabang : {{ auth()->user()->cabang->cabang }}" data-width="250" disabled>
+          <div class="search-element" >
+            <input class="form-control" type="text" placeholder="Cabang : {{ auth()->user()->cabang->cabang }}" data-width="250" disabled style="border-radius: 10px;">
           </div>
         </form>
         <ul class="navbar-nav navbar-right">
@@ -97,19 +96,28 @@
               <li><a class="nav-link" href="/cabang"><i class="fa far fa-code-branch"></i> <span>Cabang</span></a></li>
 
               <li class="menu-header">Transaksi</li>
-              <li><a class="nav-link" href="/menu-kasir"><i class="fa fal fa-credit-card"></i><span>Menu kasir</span></a></li>
+              <!-- <li><a class="nav-link" href="/menu-kasir"><i class="fa fal fa-credit-card"></i><span>Menu kasir</span></a></li> -->
               <li><a class="nav-link" href="/data-penjualan"><i class="fa fal fa-money-check-alt"></i><span>Data Penjualan</span></a></li>
 
               <li class="menu-header">Laporan</li>
               <li><a class="nav-link" href="/laporan-penjualan"><i class="fa fal fa-file-invoice-dollar"></i><span>Laporan Penjualan</span></a></li>
               <li><a class="nav-link" href="/rekap-pemasukan"><i class="fa fal fa-receipt"></i><span>Rekap Pemasukan</span></a></li>
+              <li><a class="nav-link" href="{{ route('tren-penjualan') }}"><i class="fa fal fa-receipt"></i><span>Tren Penjualan</span></a></li>
+
 
               <li class="menu-header">Manajemen User</li>
               <li><a class="nav-link" href="/pengguna"><i class="fa fal fa-users"></i><span>Pengguna</span></a></li>
               <li><a class="nav-link" href="/hak-akses"><i class="fa fal fa-user-shield"></i><span>Hak Akses</span></a></li>
+              
+              
+              <li class="menu-header">Database</li>
+              <li><a class="nav-link" href="{{ route('backup') }}"><i class="fa fa-database"></i><span>Backup & Restore</span></a></li>
+
+              <li class="menu-header">Laporan Masalah</li>
+              <li> <a class="nav-link" href="{{ route('report-issues.index') }}"><i class="fa fa-exclamation-circle"></i><span>Laporkan Masalah</span></a></li>
             @endif
 
-            @if(auth()->user()->role->role === 'kepala restoran')
+            @if(auth()->user()->role->role === 'owner')
               <li class="menu-header">Dashboard</li>
               <li><a class="nav-link" href="/"><i class="fas fa-fire"></i> <span>Dashboard</span></a></li>
               
@@ -130,27 +138,13 @@
               <li class="menu-header">Laporan</li>
               <li><a class="nav-link" href="/laporan-penjualan"><i class="fa fal fa-file-invoice-dollar"></i><span>Laporan Penjualan</span></a></li>
               <li><a class="nav-link" href="/rekap-pemasukan"><i class="fa fal fa-receipt"></i><span>Rekap Pemasukan</span></a></li>
-            @endif
+              <li><a class="nav-link" href="{{ route('tren-penjualan') }}"><i class="fa fal fa-receipt"></i><span>Tren Penjualan</span></a></li>
 
-            @if(auth()->user()->role->role === 'admin')
-              <li class="menu-header">Dashboard</li>
-              <li><a class="nav-link" href="/"><i class="fas fa-fire"></i> <span>Dashboard</span></a></li>
-              
-              <li class="menu-header">Data Master</li>
-              <li class="dropdown">
-                <a href="#" class="nav-link has-dropdown" data-toggle="dropdown"><i class="fas fa-columns"></i> <span>Menu</span></a>
-                <ul class="dropdown-menu">
-                  <li><a class="nav-link" href="/makanan"><i class="fa fa-solid fa-circle fa-xs"></i> <span>Makanan</span></a></li>
-                  <li><a class="nav-link" href="/minuman"><i class="fa fa-solid fa-circle fa-xs"></i> <span>Minuman</span></a></li>
-                </ul>
-              </li>
+              <li class="menu-header">Manajemen User</li>
+              <li><a class="nav-link" href="/pengguna"><i class="fa fal fa-users"></i><span>Pengguna</span></a></li>
 
-              <li class="menu-header">Transaksi</li>
-              <li><a class="nav-link" href="/data-penjualan"><i class="fa fal fa-money-check-alt"></i><span>Data Penjualan</span></a></li>
-            
-              <li class="menu-header">Laporan</li>
-              <li><a class="nav-link" href="/laporan-penjualan"><i class="fa fal fa-file-invoice-dollar"></i><span>Laporan Penjualan</span></a></li>
-              <li><a class="nav-link" href="/rekap-pemasukan"><i class="fa fal fa-receipt"></i><span>Rekap Pemasukan</span></a></li>
+              <li class="menu-header">Laporan Masalah</li>
+              <li> <a class="nav-link" href="{{ route('report-issues.index') }}"><i class="fa fa-exclamation-circle"></i><span>Laporkan Masalah</span></a></li>
             @endif
 
             @if (auth()->user()->role->role === 'kasir')
@@ -160,7 +154,20 @@
               <li class="menu-header">Transaksi</li>
               <li><a class="nav-link" href="/menu-kasir"><i class="fa fal fa-credit-card"></i><span>Menu kasir</span></a></li>
               <li><a class="nav-link" href="/data-penjualan"><i class="fa fal fa-money-check-alt"></i><span>Data Penjualan</span></a></li>
+
+              <li class="menu-header">Laporan Masalah</li>
+              <li><a class="nav-link" href="{{ route('report-issues.index') }}"><i class="fa fa-exclamation-circle"></i><span>Laporkan Masalah</span></a></li>
+         @endif
+
+
+            @if (auth()->user()->role->role === 'teknisi')
+            <li class="menu-header">Laporan Masalah</li>
+            <li><a class="nav-link" href="{{ route('report-issues.index') }}"><i class="fa fa-list"></i><span>Daftar Laporan</span></a></li>
+
+            <li class="menu-header">Database</li>
+            <li><a class="nav-link" href="{{ route('backup') }}"><i class="fa fa-database"></i><span>Backup & Restore</span></a></li>
             @endif
+            
           </ul>
         </aside>
       </div>

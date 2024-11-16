@@ -14,7 +14,7 @@ class MenuKasirController extends Controller
     public function index()
     {
         $user = auth()->user();
-        if ($user->role->role === 'administrator' || $user->role->role === 'kepala restoran') {
+        if ($user->role->role === 'administrator' || $user->role->role === 'owner') {
             $makanans = Makanan::all();
             $minumans = Minuman::all();
         } else {

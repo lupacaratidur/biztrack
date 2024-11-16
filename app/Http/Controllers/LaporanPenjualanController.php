@@ -22,7 +22,7 @@ class LaporanPenjualanController extends Controller
         $bulanIni   = Carbon::now()->format('m');
         $hariIni    = Carbon::now()->format('Y-m-d');
 
-        if ($userRole === 'administrator' || $userRole === 'kepala restoran') {
+        if ($userRole === 'administrator' || $userRole === 'owner') {
             $transaksiBulanIni   = Pembelian::whereMonth('tgl_transaksi', $bulanIni)
                 ->count();
             $transaksiBulanLalu  = Pembelian::whereMonth('tgl_transaksi', '=', Carbon::now()->subMonth()->format('m'))
@@ -68,7 +68,7 @@ class LaporanPenjualanController extends Controller
         $tanggalSelesai = $request->input('tanggal_selesai');
 
         // Logika pemilihan data berdasarkan cabang dan rentang tanggal
-        if ($user->role->role === 'administrator' || $user->role->role === 'kepala restoran') {
+        if ($user->role->role === 'administrator' || $user->role->role === 'owner') {
             if ($selectedOption == '' || $selectedOption === 'Semua Cabang') {
                 $pembelians = Pembelian::with('detailPembelians')->orderBy('id', 'DESC')->get();
             } else {

@@ -1,5 +1,5 @@
 @extends('layouts.app')
-
+@include('menu-kasir.qr')
 @section('content')
 <section class="section">
     <div class="section-header">
@@ -48,36 +48,49 @@
                     <input type="hidden" id="id">
 
                     <div class="form-group">
-                      <label for="uang_pelanggan">Kode Transaksi : </label>
+                      <label for="uang_pelanggan">Kode Transaksi :</label>
                       <input type="text" class="form-control" id="kodePembelian" disabled>
                     </div>
-                    
+
                     <div class="form-group">
-                      <div class="row">
-                        <div class="col">
-                          <label for="uang_pelanggan">Jumlah Uang : </label>
-                          <div class="input-group">
-                            <span class="input-group-text" id="basic-addon1">Rp.</span>
-                            <input type="number" class="form-control" id="uang_pelanggan">
+                      <label for="metode_pembayaran">Pilih Metode Pembayaran:</label>
+                      <div>
+                        <button type="button" class="btn btn-primary" onclick="selectCashPayment()">Cash</button>
+                        <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#qrCodeModal">QR Code</button>
+
+
+                      </div>
+                      <input type="hidden" id="metode_pembayaran" value="">
+                    </div>
+
+                    <div id="cashPayment" style="display: none;">
+                      <div class="form-group">
+                        <div class="row">
+                          <div class="col">
+                            <label for="uang_pelanggan">Jumlah Uang :</label>
+                            <div class="input-group">
+                              <span class="input-group-text" id="basic-addon1">Rp.</span>
+                              <input type="number" class="form-control" id="uang_pelanggan">
+                            </div>
                           </div>
-                        </div>
-                        <div class="col">
-                          <label for="kembalian">Kembalian : </label>
-                          <div class="input-group">
-                            <span class="input-group-text" id="basic-addon1">Rp.</span>
-                            <input type="number" class="form-control" id="kembalian" disabled>
+                          <div class="col">
+                            <label for="kembalian">Kembalian :</label>
+                            <div class="input-group">
+                              <span class="input-group-text" id="basic-addon1">Rp.</span>
+                              <input type="number" class="form-control" id="kembalian" disabled>
+                            </div>
                           </div>
                         </div>
                       </div>
+                      <div id="paymentMessage"></div>
+                      <button class="btn btn-primary" onclick="calculateChange()">Bayar</button>
+                    </div>
                     </div>
 
-                    <div id="paymentMessage"></div>
-                    <button class="btn btn-primary" onclick="calculateChange()">Bayar</button>
-
-                  </div>
                 </div>
               </div>
             </div>
+
 
             {{-- Menampilkan List Daftar Produk makanan dan minuman --}}
             <div class="col-lg-8">
@@ -85,19 +98,19 @@
                     <div class="card-header">
                       <h4>Daftar Makanan</h4>
                       <div class="card-header-action">
-                        <a href="/makanan" class="btn btn-primary">
-                          Lihat Semua
-                        </a>
                       </div>
                     </div>
                     <div class="card-body">
                       <div class="row">
                         @foreach ($makanans as $makanan)
                             <div class="col-md-2">
+                            <center>
                                 <div class="menu-item" onclick="CartManager.addToCart('{{ $makanan->nama_makanan }}', {{ $makanan->harga }})">
-                                    <img src="{{ asset('storage/'. $makanan->gambar) }}" alt="Gambar Makanan" width="100%;" height="auto;">
+                                    <img src="{{ asset('storage/'. $makanan->gambar) }}" alt="Gambar Makanan" style="width: 120px; height: 120px; object-fit: cover; border-radius: 10px;"><br>
                                     {{ $makanan->nama_makanan }}
                                 </div>
+                            </center>
+
                             </div>
                          @endforeach
                       </div>
@@ -106,19 +119,18 @@
                     <div class="card-header">
                       <h4>Daftar Minuman</h4>
                         <div class="card-header-action">
-                          <a href="/minuman" class="btn btn-primary">
-                            Lihat Semua
-                          </a>
                         </div>
                       </div>
                       <div class="card-body">
                         <div class="row">
                             @foreach ($minumans as $minuman)
                             <div class="col-md-2">
+                              <center>
                                 <div class="menu-item" onclick="CartManager.addToCart('{{ $minuman->nama_minuman }}', {{ $minuman->harga }})">
-                                    <img src="{{ asset('storage/'. $minuman->gambar) }}" alt="Gambar minuman" width="100%;" height="auto;">
+                                    <img src="{{ asset('storage/'. $minuman->gambar) }}" alt="Gambar minuman"  style="width: 120px; height: 120px; object-fit: cover; border-radius: 10px;"><br>
                                     {{ $minuman->nama_minuman }}
                                 </div>
+                                </center>
                             </div>
                          @endforeach
                         </div>
@@ -149,8 +161,10 @@
     </div>
   </section>
 
+
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
 <script>
-  var CartManager = {
+ var CartManager = {
     cartItems: [],
 
     addToCart: function(itemNama, itemHarga) {
@@ -332,14 +346,16 @@
         updateStatusPembayaran();
         paymentMessage.innerHTML = '<div class="alert alert-success">Pembayaran Sukses!</div>';
         printStruk();
+        refreshKasir();
 
       } else {
         paymentMessage.innerHTML = '<div class="alert alert-danger">Jumlah uang yang diberikan tidak mencukupi!</div>';
       }
     }
 
-    // Fitur Set Unpaid ke Paid (terbayar)
-    function updateStatusPembayaran(){
+
+  // Fitur Set Unpaid ke Paid (terbayar)
+  function updateStatusPembayaran(){
       var pembelianId = document.getElementById('id').value;
       $.ajax({
         url: '/menu-kasir/paid',
@@ -357,6 +373,8 @@
         }
       });
     }
+  
+    
   
 
 
@@ -398,45 +416,60 @@
       printWindow.print();
     }
 
-    // Fitur Refresh Menu Kasir
-    var refreshButton = document.getElementById('refresh_btn');
+    // Fungsi untuk mereset menu kasir
+  function refreshKasir() {
+    // Mendapatkan referensi elemen-elemen yang ingin di-refresh
+    var formElements = document.getElementsByTagName('input');
+    var tableRows = document.getElementsByTagName('td');
+    var alerts = document.getElementsByClassName('alert');
+    var totalElement = document.getElementById('checkoutTotalDetail');
+    var totalElement2 = document.getElementById('checkoutTotalPayment');
+    var kodePembelianElement = document.getElementById('kodePembelian');
 
-    // Menambahkan event listener pada tombol Refresh
-    refreshButton.addEventListener('click', function() {
-      // Mendapatkan referensi elemen-elemen yang ingin di-refresh
-      var formElements          = document.getElementsByTagName('input');
-      var tableRows             = document.getElementsByTagName('td');
-      var alerts                = document.getElementsByClassName('alert');
-      var totalElement          = document.getElementById('checkoutTotalDetail');
-      var totalElement2         = document.getElementById('checkoutTotalPayment');
-      var kodePembelianElement  = document.getElementById('kodePembelian');
+    // Mengosongkan nilai pada setiap elemen input
+    for (var i = 0; i < formElements.length; i++) {
+      formElements[i].value = '';
+    }
 
-      // Mengosongkan nilai pada setiap elemen input
-      for (var i = 0; i < formElements.length; i++) {
-        formElements[i].value = '';
-      }
+    // Menghapus isi pada setiap baris tabel
+    for (var j = 0; j < tableRows.length; j++) {
+      tableRows[j].innerHTML = '';
+    }
 
-      // Menghapus isi pada setiap baris tabel
-      for (var j = 0; j < tableRows.length; j++) {
-        tableRows[j].innerHTML = '';
-      }
+    // Menghapus elemen alert
+    while (alerts.length > 0) {
+      alerts[0].remove();
+    }
 
-      // Menghapus elemen alert
-      while (alerts.length > 0) {
-        alerts[0].remove();
-      }
+    // Memperbarui nilai pada elemen total
+    if (totalElement && totalElement2 && kodePembelianElement) {
+      totalElement.textContent = '0';
+      totalElement2.textContent = '0';
+      kodePembelianElement.textContent = '';
+    }
+  }
 
-      // Memperbarui nilai pada elemen total
-      if (totalElement && totalElement2 && kodePembelianElement) {
-        totalElement.textContent = '0';
-        totalElement2.textContent = '0';
-        kodePembelianElement.textContent = '';
-      } 
-    });
-
-
+  // Event listener untuk tombol Refresh
+document.getElementById('refresh_btn').addEventListener('click', function() {
+  // Panggil fungsi refreshKasir saat tombol refresh diklik
+  refreshKasir();
+});
 </script>
 
 
-@endsection
+<script>
+//Fungsi untuk menampilkan Cash Payment
+function selectCashPayment() {
+  // Menyembunyikan pesan pembayaran QR Code (jika ada)
+  document.getElementById('paymentMessage').style.display = 'none';
 
+  // Menampilkan Cash Payment
+  document.getElementById('cashPayment').style.display = 'block';
+  
+  // Mengubah nilai metode pembayaran menjadi "cash"
+  document.getElementById('metode_pembayaran').value = 'cash';
+}
+
+</script>
+
+@endsection

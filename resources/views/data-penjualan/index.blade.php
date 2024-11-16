@@ -8,7 +8,7 @@
 
         <div class="section-body">
             <div class="row">
-                @if (auth()->user()->role->role === 'administrator' || auth()->user()->role->role === 'kepala restoran')
+                @if (auth()->user()->role->role === 'administrator' || auth()->user()->role->role === 'owner')
                     <div class="col-lg-12">
                         <div class="card">
                             <div class="card-body">

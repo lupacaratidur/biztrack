@@ -29,7 +29,7 @@ class DataPenjualanController extends Controller
         $user = auth()->user();
         $selectedOption = $request->input('opsi');
 
-        if ($user->role->role === 'administrator' || $user->role->role === 'kepala restoran') {
+        if ($user->role->role === 'administrator' || $user->role->role === 'owner') {
             if ($selectedOption == '' || $selectedOption === 'Semua Cabang') {
                 $pembelians = Pembelian::with('detailPembelians')->orderBy('id', 'DESC')->get();
             } else {

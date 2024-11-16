@@ -18,8 +18,8 @@ class FilterCabang
     {
         $user = Auth::user();
 
-        if (in_array($user->role->role, ['administrator', 'kepala restoran'])) {
-            // Jika pengguna adalah administrator atau kepala restoran, tidak perlu melakukan pemfilteran
+        if (in_array($user->role->role, ['administrator', 'owner'])) {
+            // Jika pengguna adalah administrator atau owner, tidak perlu melakukan pemfilteran
             return $next($request);
         }
 
