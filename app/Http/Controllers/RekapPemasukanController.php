@@ -69,58 +69,65 @@ class RekapPemasukanController extends Controller
      */
     public function getData(Request $request)
     {
-        $user           = auth()->user();
+        $user = auth()->user();
         $selectedOption = $request->input('opsi');
-        $tanggalMulai   = $request->input('tanggal_mulai');
+        $tanggalMulai = $request->input('tanggal_mulai');
         $tanggalSelesai = $request->input('tanggal_selesai');
 
-        if ($user->role->role === 'administrator' || $user->role->role === 'owner') {
-            if ($selectedOption == '' || $selectedOption === 'Semua Cabang') {
-                $pembelians = Pembelian::where('status', '=', 'paid')->orderBy('id', 'DESC')->get();
+        try {
+            // Query dasar
+            $query = Pembelian::with('detailPembelians')->where('status', '=', 'paid')->orderBy('id', 'DESC');
+
+            // Filter berdasarkan cabang
+            if ($user->role->role === 'administrator' || $user->role->role === 'owner') {
+                if ($selectedOption && $selectedOption !== 'Semua Cabang') {
+                    $query->where('cabang_id', $selectedOption);
+                }
             } else {
-                $pembelians = Pembelian::where('cabang_id', $selectedOption)->where('status', '=', 'paid')->orderBy('id', 'DESC')->get();
+                $query->where('cabang_id', $user->cabang_id);
             }
-        } else {
-            if ($selectedOption == '' || $selectedOption === 'Semua Cabang') {
-                $pembelians = Pembelian::where('cabang_id', $user->cabang_id)->where('status', '=', 'paid')->orderBy('id', 'DESC')->get();
-            } else {
-                $pembelians = Pembelian::where('cabang_id', $user->cabang_id)->where('cabang_id', $selectedOption)->where('status', '=', 'paid')->orderBy('id', 'DESC')->get();
+
+            // Filter berdasarkan rentang tanggal
+            if ($tanggalMulai && $tanggalSelesai) {
+                $tanggalMulai = Carbon::parse($tanggalMulai)->format('Y-m-d');
+                $tanggalSelesai = Carbon::parse($tanggalSelesai)->format('Y-m-d');
+                $query->whereBetween('tgl_transaksi', [$tanggalMulai, $tanggalSelesai]);
             }
-        }
 
+            // Ambil data setelah filter
+            $pembelians = $query->get();
 
-        if ($tanggalMulai !== null && $tanggalSelesai !== null) {
-            $pembelians = $pembelians->whereBetween('tgl_transaksi', [$tanggalMulai, $tanggalSelesai]);
-        }
-        $totalPemasukan = $pembelians->sum('total_harga');
+            // Format data
+            $dataFormatted = $pembelians->map(function ($item) {
+                return [
+                    'id' => $item->id,
+                    'kode_pembelian' => $item->kode_pembelian,
+                    'total_harga' => $item->total_harga,
+                    'tgl_transaksi' => $item->tgl_transaksi,
+                    'detail_pembelians' => $item->detailPembelians->map(function ($detail) {
+                        return [
+                            'nama' => $detail->nama,
+                            'quantity' => $detail->quantity
+                        ];
+                    }),
+                ];
+            });
 
-        if ($request->has('print_pdf')) {
-            $data = [
-                'pembelians'        => $pembelians,
-                'selectedOption'    => $selectedOption,
-                'tanggalMulai'      => $tanggalMulai,
-                'tanggalSelesai'    => $tanggalSelesai,
-                'totalPemasukan'    => $totalPemasukan
-            ];
-            $dompdf = new Dompdf();
-            $dompdf->setPaper('A4', 'portrait');
-            $html = view('/rekap-pemasukan/print-rekap-pemasukan', compact('data'))->render();
-            $dompdf->loadHtml($html);
-            $dompdf->render();
-            $dompdf->stream('rekap_pemasukan.pdf');
-
+            // Kembalikan data
             return response()->json([
                 'success' => true,
-                'totalPemasukan' => $totalPemasukan
+                'data' => $dataFormatted
             ]);
+        } catch (\Exception $e) {
+            // Tangkap error dan kembalikan response
+            return response()->json([
+                'success' => false,
+                'error' => $e->getMessage()
+            ], 500);
         }
-
-        return response()->json([
-            'success'   => true,
-            'data'      => $pembelians,
-            'totalPemasukan' => $totalPemasukan
-        ]);
     }
+
+
 
     /**
      * Show the form for creating a new resource.

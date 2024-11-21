@@ -14,14 +14,15 @@ class TrenPenjualanController extends Controller
     {
         $startDate = $request->query('start_date');
         $endDate = $request->query('end_date');
+        $selectedBranch = $request->query('cabang_id'); // Menangkap ID cabang dari filter
 
         // Fetch branch names
         $pemasukanPerCabang = Pembelian::select('cabang_id', DB::raw('SUM(total_harga) as total_pemasukan'))
             ->groupBy('cabang_id')
             ->pluck('total_pemasukan', 'cabang_id');
-        $cabangNames = Cabang::whereIn('id', $pemasukanPerCabang->keys())->pluck('cabang', 'id');
+        $cabangNames = Cabang::pluck('cabang', 'id'); // Ambil semua nama cabang
 
-        // Query for Product Sales Trend Chart with optional date filtering
+        // Query for Product Sales Trend Chart with optional date and branch filtering
         $query = DetailPembelian::select('nama', 'pembelians.cabang_id', DB::raw('SUM(quantity) as total_sold'))
             ->join('pembelians', 'detail_pembelians.pembelian_id', '=', 'pembelians.id')
             ->groupBy('nama', 'pembelians.cabang_id')
@@ -32,11 +33,18 @@ class TrenPenjualanController extends Controller
             $query->whereBetween('pembelians.tgl_transaksi', [$startDate, $endDate]);
         }
 
+        // Apply branch filtering if a specific branch is selected
+        if ($selectedBranch) {
+            $query->where('pembelians.cabang_id', $selectedBranch);
+        }
+
         $grafikTrenProduk = $query->get()->groupBy('nama');
 
         return view('tren-penjualan.index', [
             'grafikTrenProduk' => $grafikTrenProduk,
             'cabangNames' => $cabangNames,
+            'selectedBranch' => $selectedBranch, // Kirim cabang yang dipilih
         ]);
     }
+
 }

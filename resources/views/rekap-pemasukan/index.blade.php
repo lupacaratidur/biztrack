@@ -178,95 +178,87 @@
   </section>
 
 <!-- Datatable Jquery -->
-<script>
+<!-- <script>
     $(document).ready(function(){
         $('#table_id').DataTable();
     })
-</script>
+</script> -->
 
 <!-- Select Option -->
 <script>
-    $(document).ready(function(){
+    $(document).ready(function() {
+        var table = $('#table_id').DataTable({
+            destroy: true,
+            autoWidth: false
+        });
+
+        // Load semua data awal
         loadData();
 
-        $('#filter_form').submit(function(event){
-            event.preventDefault();
-            loadData();
+        // Event untuk tombol filter
+        $('#filter_form').on('submit', function(e) {
+            e.preventDefault();
+            loadData(); // Panggil fungsi loadData saat tombol filter ditekan
         });
 
-        $('#refresh_btn').on('click', function(){
-            refreshTable();
+        // Tombol refresh
+        $('#refresh_btn').on('click', function() {
+            $('#filter_form')[0].reset(); // Reset form filter
+            loadData(); // Muat ulang semua data
         });
 
-        function loadData(){
-            var selectedOption  = $('#select-cabang').val();
-            var tanggalMulai    = $('#tanggal_mulai').val();
-            var tanggalSelesai  = $('#tanggal_selesai').val();
+        // Fungsi untuk memuat data
+        function loadData() {
+            var cabangId = $('#select-cabang').val() || '';
+            var tanggalMulai = $('#tanggal_mulai').val() || '';
+            var tanggalSelesai = $('#tanggal_selesai').val() || '';
 
             $.ajax({
-                url: "/rekap-pemasukan/get-data",
-                type: "GET",
-                dataType: 'JSON',
+                url: '/rekap-pemasukan/get-data',
+                type: 'GET',
+                dataType: 'json',
                 data: {
-                    opsi: selectedOption,
+                    opsi: cabangId,
                     tanggal_mulai: tanggalMulai,
                     tanggal_selesai: tanggalSelesai
                 },
-                success: function(response){
+                success: function(response) {
+                    // Bersihkan tabel
+                    table.clear();
+
+                    // Jika data kosong, render tabel kosong
+                    if (response.success && (!response.data || response.data.length === 0)) {
+                        table.draw();
+                        return;
+                    }
+
+                    // Tambahkan data ke tabel
                     let counter = 1;
-                    $('#table_id').DataTable().clear();
-                    $.each(response.data, function(key, value) {
-                        let penjualan = `
-                            <tr class="penjualan-row" id="index_${value.id}">
-                                <td>${counter++}</td>
-                                <td>${value.kode_pembelian}</td>
-                                <td>${value.tgl_transaksi}</td>
-                                <td>Rp. ${value.total_harga}</td>
-                            </tr>
-                        `;
-                        $('#table_id').DataTable().row.add($(penjualan)).draw(false);
+                    $.each(response.data, function(index, item) {
+                        let detailItems = item.detail_pembelians.map(function(detail) {
+                            return `${detail.nama} (${detail.quantity})`;
+                        }).join(', ');
+
+                        table.row.add([
+                            counter++,
+                            item.kode_pembelian,
+                            item.tgl_transaksi,
+                            `Rp. ${item.total_harga}`,
+                            detailItems
+                        ]);
                     });
+
+                    table.draw(false); // Render ulang tabel
+                },
+                error: function(xhr) {
+                    console.error('Error:', xhr.responseText);
+                    alert('Terjadi kesalahan saat memuat data.');
                 }
             });
-        };
-        // Fungsi Refresh Tabel
-        function refreshTable() {
-            $('#filter_form')[0].reset();
-            loadData();
         }
-
-        // Print Rekap Pemasukan
-        $('#print-rekap-pemasukan').on('click', function(){
-            var selectedOption  = $('#select-cabang').val();
-            var tanggalMulai    = $('#tanggal_mulai').val();
-            var tanggalSelesai  = $('#tanggal_selesai').val();
-            var url             = '/rekap-pemasukan/print-rekap-pemasukan';
-
-            if(selectedOption && selectedOption !== 'Semua Cabang'){
-                url += '?opsi=' + selectedOption;
-                if(tanggalMulai && tanggalSelesai){
-                    url += '&tanggal_mulai=' + tanggalMulai + '&tanggal_selesai=' + tanggalSelesai;
-                }
-            }
-            if(tanggalMulai && tanggalSelesai){
-                url += '?tanggal_mulai=' + tanggalMulai + '&tanggal_selesai=' + tanggalSelesai;
-            }
-
-            $.ajax({
-                url: url,
-                method: 'GET',
-                dataType: 'JSON',
-                data: { print_pdf: true},
-                success: function(response){
-                    if(response.success){
-                        console.log('PDF telah dicetak');
-                    }
-                },
-                error: function(xhr, status, error) {
-                    console.log(error);
-                }
-            })
-        })
     });
 </script>
+
+
+
 @endsection

@@ -62,64 +62,68 @@ class LaporanPenjualanController extends Controller
      */
     public function getData(Request $request)
     {
-        $user           = auth()->user();
-        $selectedOption = $request->input('opsi');
-        $tanggalMulai   = $request->input('tanggal_mulai');
-        $tanggalSelesai = $request->input('tanggal_selesai');
-
-        // Logika pemilihan data berdasarkan cabang dan rentang tanggal
-        if ($user->role->role === 'administrator' || $user->role->role === 'owner') {
-            if ($selectedOption == '' || $selectedOption === 'Semua Cabang') {
-                $pembelians = Pembelian::with('detailPembelians')->orderBy('id', 'DESC')->get();
+        $startDate = $request->query('tanggal_mulai');
+        $endDate = $request->query('tanggal_selesai');
+        $selectedBranch = $request->query('cabang_id'); // Menangkap ID cabang dari filter
+        $user = auth()->user();
+    
+        try {
+            // Query dasar untuk data pembelian
+            $query = Pembelian::with('detailPembelians')->orderBy('id', 'DESC');
+    
+            // Filter berdasarkan cabang
+            if ($user->role->role === 'administrator' || $user->role->role === 'owner') {
+                if ($selectedBranch && $selectedBranch !== 'Semua Cabang') {
+                    $query->where('cabang_id', $selectedBranch);
+                }
             } else {
-                $pembelians = Pembelian::with('detailPembelians')
-                    ->where('cabang_id', $selectedOption)
-                    ->orderBy('id', 'DESC')
-                    ->get();
+                $query->where('cabang_id', $user->cabang_id);
             }
-        } else {
-            if ($selectedOption == '' || $selectedOption === 'Semua Cabang') {
-                $pembelians = Pembelian::with('detailPembelians')
-                    ->where('cabang_id', $user->cabang_id)
-                    ->orderBy('id', 'DESC')
-                    ->get();
-            } else {
-                $pembelians = Pembelian::with('detailPembelians')
-                    ->where('cabang_id', $user->cabang_id)
-                    ->where('cabang_id', $selectedOption)
-                    ->orderBy('id', 'DESC')
-                    ->get();
+    
+            // Filter berdasarkan rentang tanggal (jika tanggal diberikan)
+            if ($startDate && $endDate) {
+                $startDate = Carbon::parse($startDate)->format('Y-m-d');
+                $endDate = Carbon::parse($endDate)->format('Y-m-d');
+                $query->whereBetween('tgl_transaksi', [$startDate, $endDate]);
             }
+    
+            // Ambil data setelah filter
+            $pembelians = $query->get();
+    
+            // Format data untuk grafik atau tampilan tabel
+            $dataFormatted = $pembelians->map(function ($item) {
+                return [
+                    'id' => $item->id,
+                    'kode_pembelian' => $item->kode_pembelian,
+                    'total_harga' => $item->total_harga,
+                    'tgl_transaksi' => $item->tgl_transaksi,
+                    'cabang_id' => $item->cabang_id,
+                    'detail_pembelians' => $item->detailPembelians->map(function ($detail) {
+                        return [
+                            'nama' => $detail->nama,
+                            'quantity' => $detail->quantity
+                        ];
+                    }),
+                ];
+            });
+    
+            // Kembalikan data sebagai JSON
+            return response()->json([
+                'success' => true,
+                'data' => $dataFormatted
+            ]);
+        } catch (\Exception $e) {
+            // Tangkap error dan kembalikan response
+            return response()->json([
+                'error' => $e->getMessage()
+            ], 500);
         }
-
-        if ($tanggalMulai !== null && $tanggalSelesai !== null) {
-            $pembelians = $pembelians->whereBetween('tgl_transaksi', [$tanggalMulai, $tanggalSelesai]);
-        }
-
-        if ($request->has('print_pdf')) {
-            $data = [
-                'pembelians'        => $pembelians,
-                'selectedOption'    => $selectedOption,
-                'tanggalMulai'      => $tanggalMulai,
-                'tanggalSelesai'    => $tanggalSelesai
-            ];
-            $dompdf = new Dompdf();
-            $dompdf->setPaper('A4', 'portrait');
-            $html = view('/laporan-penjualan/print-laporan-penjualan', compact('data'))->render();
-            $dompdf->loadHtml($html);
-            $dompdf->render();
-            $dompdf->stream('laporan_penjualan.pdf');
-        }
-
-        return response()->json([
-            'success'   => true,
-            'data'      => $pembelians
-        ]);
     }
+    
 
-    /**
-     * Display the specified resource.
-     */
+
+
+    
     public function show(string $id)
     {
         //
