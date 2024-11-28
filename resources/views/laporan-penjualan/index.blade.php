@@ -8,116 +8,122 @@
 
     <div class="section-body">
         <div class="row">
+            <!-- Transaksi Hari Ini -->
             <div class="col-md-3">
-                    <div class="card card-success">
-                        <div class="card-header">
-                            <h6>Transaksi Hari Ini</h6>
-                        </div>
-                        <div class="card-body">
-                            <b>{{ number_format($transaksiHariIni), 0, ',', '.' }}</b> kali
-                            @if ($transaksiHariIni > $transaksiKemarin)
-                                @if ($transaksiKemarin > 0)
-                                    <span class="badge badge-success"><i class="fa far fa-arrow-up"></i> {{ number_format((($transaksiHariIni - $transaksiKemarin) / $transaksiKemarin) * 100, 2) }}%</span>
-                                @else
-                                    <span class="badge badge-success"><i class="fa far fa-arrow-up"></i> Naik</span>
-                                @endif
-                            @elseif($transaksiHariIni < $transaksiKemarin)
-                                @if ($transaksiKemarin > 0)
-                                    <span class="badge badge-danger"><i class="fa far fa-arrow-down"></i> {{ number_format((($transaksiKemarin - $transaksiHariIni) / $transaksiKemarin) * 100, 2) }}%</span>
-                                @else
-                                    <span class="badge badge-danger"><i class="fa far fa-arrow-down"></i> Turun</span>
-                                @endif
+                <div class="card card-success">
+                    <div class="card-header">
+                        <h6>Transaksi Hari Ini</h6>
+                    </div>
+                    <div class="card-body">
+                        <b>{{ number_format($transaksiHariIni, 0, ',', '.') }}</b> kali
+                        @if ($transaksiHariIni > $transaksiKemarin)
+                            @if ($transaksiKemarin > 0)
+                                <span class="badge badge-success"><i class="fa far fa-arrow-up"></i> {{ number_format((($transaksiHariIni - $transaksiKemarin) / $transaksiKemarin) * 100, 2) }}%</span>
                             @else
-                                <span class="badge badge-secondary">Sama</span>
+                                <span class="badge badge-success"><i class="fa far fa-arrow-up"></i> Naik</span>
                             @endif
-                        </div>
-                    </div>
-                </div>
-                <div class="col-md-3">
-                    <div class="card card-success">
-                        <div class="card-header">
-                            <h6>Transaksi Kemarin</h6>
-                        </div>
-                        <div class="card-body">
-                            <b>{{ number_format($transaksiKemarin), 0, ',', '.' }}</b> kali
-                        </div>
-                    </div>
-                </div>
-
-                <div class="col-md-3">
-                    <div class="card card-primary">
-                        <div class="card-header">
-                            <h6>Transaksi Bulan Ini</h6>
-                        </div>
-                        <div class="card-body">
-                            <b>{{ number_format($transaksiHariIni), 0, ',', '.' }}</b> kali
-                            @if ($transaksiHariIni > $transaksiBulanLalu)
-                                @if ($transaksiBulanLalu > 0)
-                                    <span class="badge badge-success"><i class="fa far fa-arrow-up"></i> {{ number_format((($transaksiHariIni - $transaksiBulanLalu) / $transaksiBulanLalu) * 100, 2) }}%</span>
-                                @else
-                                    <span class="badge badge-success"><i class="fa far fa-arrow-up"></i> Naik</span>
-                                @endif
-                            @elseif($transaksiHariIni < $transaksiBulanLalu)
-                                @if ($transaksiBulanLalu > 0)
-                                    <span class="badge badge-danger"><i class="fa far fa-arrow-down"></i> {{ number_format((($transaksiBulanLalu - $transaksiHariIni) / $transaksiBulanLalu) * 100, 2) }}%</span>
-                                @else
-                                    <span class="badge badge-danger"><i class="fa far fa-arrow-down"></i> Turun</span>
-                                @endif
+                        @elseif($transaksiHariIni < $transaksiKemarin)
+                            @if ($transaksiKemarin > 0)
+                                <span class="badge badge-danger"><i class="fa far fa-arrow-down"></i> {{ number_format((($transaksiKemarin - $transaksiHariIni) / $transaksiKemarin) * 100, 2) }}%</span>
                             @else
-                                <span class="badge badge-secondary">Sama</span>
+                                <span class="badge badge-danger"><i class="fa far fa-arrow-down"></i> Turun</span>
                             @endif
-                        </div>
-                    </div>
-                </div>
-                <div class="col-md-3">
-                    <div class="card card-primary">
-                        <div class="card-header">
-                            <h6>Transaksi Bulan Lalu</h6>
-                        </div>
-                        <div class="card-body">
-                            <b>{{ number_format($transaksiBulanLalu), 0, ',', '.' }}</b> kali
-                        </div>
+                        @else
+                            <span class="badge badge-secondary">Sama</span>
+                        @endif
                     </div>
                 </div>
             </div>
-            <!-- Filter Section -->
-            <div class="col-lg-12">
-                <div class="card">
+
+            <!-- Transaksi Kemarin -->
+            <div class="col-md-3">
+                <div class="card card-success">
+                    <div class="card-header">
+                        <h6>Transaksi Kemarin</h6>
+                    </div>
                     <div class="card-body">
-                        <form id="filter_form">
-                            <div class="row">
-                                @if(auth()->user()->role->role === 'administrator' || auth()->user()->role->role === 'owner')
-                                    <div class="col-md-4">
-                                        <div class="form-group">
-                                            <label for="select-cabang">Pilih Cabang</label>
-                                            <select class="form-control selectric" id="select-cabang" name="cabang_id">
-                                                <option value="Semua Cabang">Semua Cabang</option>
-                                                @foreach ($cabangs as $cabang)
-                                                    <option value="{{ $cabang->id }}">{{ $cabang->cabang }}</option>
-                                                @endforeach
-                                            </select>
-                                        </div>
-                                    </div>
-                                @endif
+                        <b>{{ number_format($transaksiKemarin, 0, ',', '.') }}</b> kali
+                    </div>
+                </div>
+            </div>
+
+            <!-- Transaksi Bulan Ini -->
+            <div class="col-md-3">
+                <div class="card card-primary">
+                    <div class="card-header">
+                        <h6>Transaksi Bulan Ini</h6>
+                    </div>
+                    <div class="card-body">
+                        <b>{{ number_format($transaksiBulanIni, 0, ',', '.') }}</b> kali
+                        @if ($transaksiBulanIni > $transaksiBulanLalu)
+                            @if ($transaksiBulanLalu > 0)
+                                <span class="badge badge-success"><i class="fa far fa-arrow-up"></i> {{ number_format((($transaksiBulanIni - $transaksiBulanLalu) / $transaksiBulanLalu) * 100, 2) }}%</span>
+                            @else
+                                <span class="badge badge-success"><i class="fa far fa-arrow-up"></i> Naik</span>
+                            @endif
+                        @elseif($transaksiBulanIni < $transaksiBulanLalu)
+                            @if ($transaksiBulanLalu > 0)
+                                <span class="badge badge-danger"><i class="fa far fa-arrow-down"></i> {{ number_format((($transaksiBulanLalu - $transaksiBulanIni) / $transaksiBulanLalu) * 100, 2) }}%</span>
+                            @else
+                                <span class="badge badge-danger"><i class="fa far fa-arrow-down"></i> Turun</span>
+                            @endif
+                        @else
+                            <span class="badge badge-secondary">Sama</span>
+                        @endif
+                    </div>
+                </div>
+            </div>
+
+            <!-- Transaksi Bulan Lalu -->
+            <div class="col-md-3">
+                <div class="card card-primary">
+                    <div class="card-header">
+                        <h6>Transaksi Bulan Lalu</h6>
+                    </div>
+                    <div class="card-body">
+                        <b>{{ number_format($transaksiBulanLalu, 0, ',', '.') }}</b> kali
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Filter Section -->
+        <div class="col-lg-12">
+            <div class="card">
+                <div class="card-body">
+                    <form id="filter_form">
+                        <div class="row">
+                            @if(auth()->user()->role->role === 'administrator' || auth()->user()->role->role === 'owner')
                                 <div class="col-md-4">
                                     <div class="form-group">
-                                        <label for="tanggal_mulai">Tanggal Mulai</label>
-                                        <input type="date" class="form-control" id="tanggal_mulai" name="tanggal_mulai">
+                                        <label for="select-cabang">Pilih Cabang</label>
+                                        <select class="form-control selectric" id="select-cabang" name="cabang_id">
+                                            <option value="Semua Cabang">Semua Cabang</option>
+                                            @foreach ($cabangs as $cabang)
+                                                <option value="{{ $cabang->id }}">{{ $cabang->cabang }}</option>
+                                            @endforeach
+                                        </select>
                                     </div>
                                 </div>
-                                <div class="col-md-4">
-                                    <div class="form-group">
-                                        <label for="tanggal_selesai">Tanggal Selesai</label>
-                                        <input type="date" class="form-control" id="tanggal_selesai" name="tanggal_selesai">
-                                    </div>
-                                </div>
-                                <div class="col-md-12 d-flex justify-content-end">
-                                    <button type="submit" class="btn btn-primary mr-2">Filter</button>
-                                    <button type="button" class="btn btn-danger" id="refresh_btn">Refresh</button>
+                            @endif
+                            <div class="col-md-4">
+                                <div class="form-group">
+                                    <label for="tanggal_mulai">Tanggal Mulai</label>
+                                    <input type="date" class="form-control" id="tanggal_mulai" name="tanggal_mulai">
                                 </div>
                             </div>
-                        </form>
-                    </div>
+                            <div class="col-md-4">
+                                <div class="form-group">
+                                    <label for="tanggal_selesai">Tanggal Selesai</label>
+                                    <input type="date" class="form-control" id="tanggal_selesai" name="tanggal_selesai">
+                                </div>
+                            </div>
+                            <div class="col-md-12 d-flex justify-content-end">
+                                <button type="submit" class="btn btn-primary mr-2">Filter</button>
+                                <button type="button" class="btn btn-danger" id="refresh_btn">Refresh</button>
+                            </div>
+                        </div>
+                    </form>
                 </div>
             </div>
         </div>
@@ -147,6 +153,7 @@
         </div>
     </div>
 </section>
+
 
 <!-- JavaScript -->
 <script>

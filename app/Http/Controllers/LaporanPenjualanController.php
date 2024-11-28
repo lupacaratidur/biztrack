@@ -21,13 +21,13 @@ class LaporanPenjualanController extends Controller
         $userRole   = auth()->user()->role->role;
         $bulanIni   = Carbon::now()->format('m');
         $hariIni    = Carbon::now()->format('Y-m-d');
-
+    
         if ($userRole === 'administrator' || $userRole === 'owner') {
             $transaksiBulanIni   = Pembelian::whereMonth('tgl_transaksi', $bulanIni)
                 ->count();
             $transaksiBulanLalu  = Pembelian::whereMonth('tgl_transaksi', '=', Carbon::now()->subMonth()->format('m'))
                 ->count();
-
+    
             $transaksiHariIni    = Pembelian::whereDate('tgl_transaksi', $hariIni)
                 ->count();
             $transaksiKemarin    = Pembelian::whereDate('tgl_transaksi', '=', Carbon::now()->subDay()->format('Y-m-d'))
@@ -39,7 +39,7 @@ class LaporanPenjualanController extends Controller
             $transaksiBulanLalu  = Pembelian::whereMonth('tgl_transaksi', '=', Carbon::now()->subMonth()->format('m'))
                 ->where('cabang_id', $user->cabang_id)
                 ->count();
-
+    
             $transaksiHariIni    = Pembelian::whereDate('tgl_transaksi', $hariIni)
                 ->where('cabang_id', $user->cabang_id)
                 ->count();
@@ -47,7 +47,7 @@ class LaporanPenjualanController extends Controller
                 ->where('cabang_id', $user->cabang_id)
                 ->count();
         }
-
+    
         return view('laporan-penjualan.index', [
             'cabangs'               => Cabang::all(),
             'transaksiBulanIni'     => $transaksiBulanIni,
@@ -56,7 +56,7 @@ class LaporanPenjualanController extends Controller
             'transaksiKemarin'      => $transaksiKemarin
         ]);
     }
-
+    
     /**
      * Get Data Penjualan
      */
