@@ -35,7 +35,15 @@ Route::middleware(['auth', 'filterCabang'])->group(function() {
         
         // Route Data Penjualan
         Route::get('/data-penjualan/get-data/', [DataPenjualanController::class, 'getData']);
-        Route::resource('/data-penjualan', DataPenjualanController::class);
+        Route::get('/data-penjualan', [DataPenjualanController::class, 'index']);
+        
+        // Route untuk export PDF
+        Route::get('/data-penjualan/export-pdf', [DataPenjualanController::class, 'exportPDF'])->name('data-penjualan.export-pdf');
+
+        // Route untuk export Excel
+        Route::get('/data-penjualan/export-excel', [DataPenjualanController::class, 'exportExcel'])->name('data-penjualan.export-excel');
+
+
 
         // Route untuk Tren Penjualan
         Route::get('/tren-penjualan', [TrenPenjualanController::class, 'index'])->name('tren-penjualan');

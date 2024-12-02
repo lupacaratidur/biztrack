@@ -24,6 +24,13 @@
                                         </select>
                                     </div>
                                 </div>
+                                <div class="col-md-3">
+                                    <div class="form-group">
+                                        <label>&nbsp;</label><br>
+                                        <button class="btn btn-success" id="export-excel"><i class="fa fa-file-excel"></i> Export Excel</button>
+                                        <button class="btn btn-danger" id="export-pdf"><i class="fa fa-file-pdf"></i> Export PDF</button>
+                                    </div>
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -58,76 +65,69 @@
 
 <!-- JavaScript -->
 <script>
-    $(document).ready(function() {
-        // Inisialisasi DataTable
-        var table = $('#table_id').DataTable();
+   $(document).ready(function () {
+    var table = $('#table_id').DataTable();
 
-        // Fetch Data saat pertama kali halaman dimuat
-        loadData();
+    // Fetch data saat halaman dimuat
+    loadData();
 
-        // Tombol Filter
-        $('#filter-button').on('click', function() {
-            var selectedOption = $('#select-cabang').val();
-            var startDate = $('#start-date').val();
-            var endDate = $('#end-date').val();
-
-            loadData(selectedOption, startDate, endDate);
-        });
-
-        // Filter berdasarkan cabang saja
-        $('#select-cabang').on('change', function() {
-            var selectedOption = $(this).val();
-            var startDate = $('#start-date').val();
-            var endDate = $('#end-date').val();
-
-            loadData(selectedOption, startDate, endDate);
-        });
-
-        // Fungsi untuk memuat data dengan filter
-        function loadData(selectedOption = 'Semua Cabang', startDate = null, endDate = null) {
-            $.ajax({
-                url: "/data-penjualan/get-data",
-                type: "GET",
-                dataType: 'JSON',
-                data: {
-                    opsi: selectedOption,
-                    start_date: startDate,
-                    end_date: endDate
-                },
-                success: function(response) {
-                    let counter = 1;
-                    // Bersihkan tabel sebelum menambahkan data baru
-                    if ($.fn.DataTable.isDataTable('#table_id')) {
-                        table.clear();
-                    }
-                    $.each(response.data, function(key, value) {
-                        var badgeClass = value.status === 'paid' ? 'badge-success' : 'badge-warning';
-                        var badgeText = value.status === 'paid' ? 'Paid' : 'Unpaid';
-
-                        let detailItems = '';
-                        $.each(value.detail_pembelians, function(index, detailItem) {
-                            detailItems += `${detailItem.nama} (${detailItem.quantity}), `;
-                        });
-                        detailItems = detailItems.slice(0, -2); // Hapus koma terakhir
-
-                        let penjualan = `
-                            <tr class="penjualan-row" id="index_${value.id}">
-                                <td>${counter++}</td>
-                                <td>${value.kode_pembelian}</td>
-                                <td>Rp. ${value.total_harga}</td>
-                                <td>
-                                    <span class="badge ${badgeClass}">${badgeText}</span>
-                                </td>
-                                <td>${value.tgl_transaksi}</td>
-                                <td>${detailItems}</td>
-                            </tr>
-                        `;
-
-                        table.row.add($(penjualan)).draw(false);
-                    });
-                }
-            });
-        }
+    // Filter berdasarkan cabang
+    $('#select-cabang').on('change', function () {
+        var selectedOption = $(this).val();
+        loadData(selectedOption);
     });
+
+    // Fungsi untuk memuat data
+    function loadData(selectedOption = 'Semua Cabang') {
+        $.ajax({
+            url: '/data-penjualan/get-data',
+            type: 'GET',
+            dataType: 'JSON',
+            data: {
+                opsi: selectedOption,
+            },
+            success: function (response) {
+                table.clear();
+                let counter = 1;
+
+                $.each(response.data, function (key, value) {
+                    var badgeClass = value.status === 'paid' ? 'badge-success' : 'badge-warning';
+                    var badgeText = value.status === 'paid' ? 'Paid' : 'Unpaid';
+                    var itemDetails = value.detail_pembelians.map(function (detail) {
+                        return detail.nama + ' (Qty: ' + detail.quantity + ')';
+                    }).join(', ');
+
+                    table.row.add([
+                        counter++,
+                        value.kode_pembelian,
+                        'Rp. ' + value.total_harga,
+                        `<span class="badge ${badgeClass}">${badgeText}</span>`,
+                        value.tgl_transaksi,
+                        itemDetails,
+                    ]).draw(false);
+                });
+            },
+            error: function () {
+                alert('Gagal memuat data!');
+            },
+        });
+    }
+
+    // Export PDF
+    $('#export-pdf').on('click', function () {
+        var selectedOption = $('#select-cabang').val();
+        var exportUrl = `/data-penjualan/export-pdf?opsi=${selectedOption}`;
+        window.open(exportUrl, '_blank');
+    });
+
+    // Export Excel
+    $('#export-excel').on('click', function () {
+        var selectedOption = $('#select-cabang').val();
+        var exportUrl = `/data-penjualan/export-excel?opsi=${selectedOption}`;
+        window.open(exportUrl, '_blank');
+    });
+});
+
 </script>
+
 @endsection

@@ -47,8 +47,8 @@
             <h1><u>Laporan Penjualan Restoran</u></h1>
             <div class="detail">
                 <strong>Keterangan </strong> <br>
-                @if ($data['selectedOption'])
-                    Cabang  : {{ \App\Models\Cabang::find($data['selectedOption'])->cabang }} <br>
+                @if ($data['cabangId'])
+                    Cabang  : {{ \App\Models\Cabang::find($data['cabangId'])->cabang }} <br>
                 @else
                     Cabang  : {{ auth()->user()->cabang->cabang }} <br>
                 @endif
@@ -61,7 +61,6 @@
 
                 Tanggal Cetak : {{ now()->format('d-m-Y') }} <br>
             </div>
-      
         </div>
 
         <table>
@@ -93,8 +92,8 @@
             </tbody>
             <tfoot>
                 <tr>
-					<td colspan="5"><strong>Dicetak Oleh : {{ auth()->user()->role->role }}, Cabang {{ auth()->user()->cabang->cabang}}</strong></td>
-				</tr>
+                    <td colspan="5"><strong>Dicetak Oleh : {{ auth()->user()->role->role }}, Cabang {{ auth()->user()->cabang->cabang}}</strong></td>
+                </tr>
             </tfoot>
         </table>
     </div>

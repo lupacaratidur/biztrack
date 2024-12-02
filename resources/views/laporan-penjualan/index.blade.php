@@ -4,6 +4,10 @@
 <section class="section">
     <div class="section-header">
         <h1>Laporan Penjualan</h1>
+        <div class="ml-auto">
+            <a href="javascript:void(0)" class="btn btn-danger" id="print-laporan-penjualan"><i class="fa fa-sharp fa-light fa-print"></i> Print PDF</a>
+            <a href="javascript:void(0)" class="btn btn-success" id="export-laporan-excel"><i class="fa fa-file-excel"></i> Export Excel</a> <!-- Tombol untuk Excel -->
+        </div>
     </div>
 
     <div class="section-body">
@@ -157,76 +161,166 @@
 
 <!-- JavaScript -->
 <script>
-    $(document).ready(function() {
-        // Inisialisasi DataTable
-        var table = $('#table_id').DataTable({
-            destroy: true // Pastikan tabel dapat diinisialisasi ulang
+ $(document).ready(function() {
+    // Inisialisasi DataTable
+    var table = $('#table_id').DataTable({
+        destroy: true // Pastikan tabel dapat diinisialisasi ulang
+    });
+
+    // Load semua data pertama kali
+    loadData(); // Panggil tanpa parameter filter
+
+    // Event untuk tombol filter
+    $('#filter_form').on('submit', function(event) {
+        event.preventDefault();
+        loadData(); // Panggil fungsi loadData saat tombol filter ditekan
+    });
+
+    // Tombol Refresh untuk mengatur ulang filter
+    $('#refresh_btn').on('click', function() {
+        $('#filter_form')[0].reset(); // Reset form filter
+        loadData(); // Tampilkan semua data setelah refresh
+    });
+
+    // Fungsi untuk memuat data dari server
+    function loadData() {
+        // Ambil nilai filter (kosongkan untuk muat semua data)
+        var cabangId = $('#select-cabang').val() || '';
+        var tanggalMulai = $('#tanggal_mulai').val() || '';
+        var tanggalSelesai = $('#tanggal_selesai').val() || '';
+
+        $.ajax({
+            url: '/laporan-penjualan/get-data',
+            type: 'GET',
+            data: {
+                cabang_id: cabangId,
+                tanggal_mulai: tanggalMulai,
+                tanggal_selesai: tanggalSelesai
+            },
+            success: function(response) {
+                // Bersihkan tabel
+                table.clear();
+
+                // Jika data kosong, render tabel kosong
+                if (response.success && response.data.length === 0) {
+                    table.draw();
+                    return;
+                }
+
+                // Tambahkan data baru ke tabel
+                let counter = 1;
+                $.each(response.data, function(index, item) {
+                    let detailItems = item.detail_pembelians.map(function(detail) {
+                        return `${detail.nama} (${detail.quantity})`;
+                    }).join(', ');
+
+                    table.row.add([
+                        counter++,
+                        item.kode_pembelian,
+                        `Rp. ${item.total_harga}`,
+                        detailItems,
+                        item.tgl_transaksi
+                    ]);
+                });
+
+                table.draw(false); // Render ulang tabel
+            },
+            error: function(xhr, status, error) {
+                console.error('Error:', error);
+            }
         });
+    }
 
-        // Load semua data pertama kali
-        loadData(); // Panggil tanpa parameter filter
+    // Export PDF
+    $(document).ready(function () {
+        $('#print-laporan-penjualan').click(function () {
+            // Ambil nilai filter saat ini
+            var cabangId = $('#select-cabang').val(); // Tidak perlu nilai default kosong
+            var tanggalMulai = $('#tanggal_mulai').val();
+            var tanggalSelesai = $('#tanggal_selesai').val();
 
-        // Event untuk tombol filter
-        $('#filter_form').on('submit', function(event) {
-            event.preventDefault();
-            loadData(); // Panggil fungsi loadData saat tombol filter ditekan
-        });
+            // Tentukan URL dan data untuk request
+            var url = '/laporan-penjualan/get-data?print_pdf=true';
+            var data = {};
 
-        // Tombol Refresh untuk mengatur ulang filter
-        $('#refresh_btn').on('click', function() {
-            $('#filter_form')[0].reset(); // Reset form filter
-            loadData(); // Tampilkan semua data setelah refresh
-        });
+            // Hanya kirimkan data filter yang valid
+            if (cabangId && cabangId !== 'Semua Cabang') {
+                data.cabang_id = cabangId;
+            }
+            if (tanggalMulai) {
+                data.tanggal_mulai = tanggalMulai;
+            }
+            if (tanggalSelesai) {
+                data.tanggal_selesai = tanggalSelesai;
+            }
 
-        // Fungsi untuk memuat data dari server
-        function loadData() {
-            // Ambil nilai filter (kosongkan untuk muat semua data)
-            var cabangId = $('#select-cabang').val() || '';
-            var tanggalMulai = $('#tanggal_mulai').val() || '';
-            var tanggalSelesai = $('#tanggal_selesai').val() || '';
-
+            // Kirim request untuk menghasilkan PDF
             $.ajax({
-                url: '/laporan-penjualan/get-data',
-                type: 'GET',
-                data: {
-                    cabang_id: cabangId,
-                    tanggal_mulai: tanggalMulai,
-                    tanggal_selesai: tanggalSelesai
+                url: url, // URL controller untuk generate PDF
+                type: 'GET', // Method GET
+                data: data, // Kirimkan data filter (jika ada)
+                xhrFields: {
+                    responseType: 'blob' // Mengatur tipe respons agar mendapatkan file PDF
                 },
-                success: function(response) {
-                    // Bersihkan tabel
-                    table.clear();
-
-                    // Jika data kosong, render tabel kosong
-                    if (response.success && response.data.length === 0) {
-                        table.draw();
-                        return;
-                    }
-
-                    // Tambahkan data baru ke tabel
-                    let counter = 1;
-                    $.each(response.data, function(index, item) {
-                        let detailItems = item.detail_pembelians.map(function(detail) {
-                            return `${detail.nama} (${detail.quantity})`;
-                        }).join(', ');
-
-                        table.row.add([
-                            counter++,
-                            item.kode_pembelian,
-                            `Rp. ${item.total_harga}`,
-                            detailItems,
-                            item.tgl_transaksi
-                        ]);
-                    });
-
-                    table.draw(false); // Render ulang tabel
+                success: function (response) {
+                    var link = document.createElement('a');
+                    var fileURL = URL.createObjectURL(response);
+                    link.href = fileURL;
+                    link.download = 'laporan_penjualan.pdf'; // Nama file PDF yang akan diunduh
+                    link.click(); // Trigger download otomatis
                 },
-                error: function(xhr, status, error) {
-                    console.error('Error:', error);
+                error: function (xhr, status, error) {
+                    console.error("Error generating PDF:", error); // Menangani error jika ada
                 }
             });
-        }
+        });
     });
+
+
+    // Export Excel
+    $('#export-laporan-excel').click(function () {
+        // Ambil nilai filter saat ini
+        var cabangId = $('#select-cabang').val();
+        var tanggalMulai = $('#tanggal_mulai').val();
+        var tanggalSelesai = $('#tanggal_selesai').val();
+
+        // Tentukan URL dan data untuk request
+        var url = '/laporan-penjualan/get-data?print_excel=true';
+        var data = {};
+
+        // Hanya kirimkan data filter yang valid
+        if (cabangId && cabangId !== 'Semua Cabang') {
+            data.cabang_id = cabangId;
+        }
+        if (tanggalMulai) {
+            data.tanggal_mulai = tanggalMulai;
+        }
+        if (tanggalSelesai) {
+            data.tanggal_selesai = tanggalSelesai;
+        }
+
+        // Kirim request untuk menghasilkan file Excel
+        $.ajax({
+            url: url, // URL controller untuk generate Excel
+            type: 'GET', // Method GET
+            data: data, // Kirimkan data filter (jika ada)
+            xhrFields: {
+                responseType: 'blob' // Mengatur tipe respons agar mendapatkan file Excel
+            },
+            success: function (response) {
+                var link = document.createElement('a');
+                var fileURL = URL.createObjectURL(response);
+                link.href = fileURL;
+                link.download = 'laporan_penjualan.xlsx'; // Nama file Excel yang akan diunduh
+                link.click(); // Trigger download otomatis
+            },
+            error: function (xhr, status, error) {
+                console.error('Error:', error); // Menangani error jika ada
+            }
+        });
+    });
+
+});
 </script>
 
 
